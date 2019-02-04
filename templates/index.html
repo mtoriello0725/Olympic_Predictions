@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Olympic Athlete</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <form method=POST>
+          <div class="form-group">
+            <label for="height">Enter Height:</label>
+            <input class="form-control" id="height-input" name="height-form" type="text">
+            <label for="height">Enter Weight:</label>
+            <input class="form-control" id="weight-input" name="weight-form" type="text">
+            <label for="height">Enter Gender (M/F):</label>
+            <input class="form-control" id="gender-input" name="gender-form" type="text">
+            <label for="height">Enter Sport:</label>
+            <input class="form-control" id="sport-input" name="sport-form" type="text">
+          </div>
+          <button id="submit" type="submit" class="btn btn-default">Submit</button>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Consensus:
+          <p id="consensus">{{ consensus }}</p>
+        </h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <p>Explanation of results:</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
