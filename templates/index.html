@@ -17,15 +17,21 @@
         <form method=POST>
           <div class="form-group">
             <label for="height">Enter Height:</label>
-            <input class="form-control" id="height-input" name="height-form" type="text">
-            <label for="height">Enter Weight:</label>
-            <input class="form-control" id="weight-input" name="weight-form" type="text">
-            <label for="height">Enter Gender (M/F):</label>
-            <input class="form-control" id="gender-input" name="gender-form" type="text">
-            <label for="height">Enter Sport:</label>
-            <input class="form-control" id="sport-input" name="sport-form" type="text">
+            <input class="form-control" id="height-input" name="subjectHeight" type="int">
           </div>
-          <button id="submit" type="submit" class="btn btn-default">Submit</button>
+          <div class="form-group">
+            <label for="height">Enter Weight:</label>
+            <input class="form-control" id="weight-input" name="subjectWeight" type="int">
+          </div>
+          <div class="form-group">
+            <label for="height">Enter Gender (M/F):</label>
+            <input class="form-control" id="gender-input" name="subjectGender" type="text">
+          </div>
+          <div class="form-group">
+            <label for="height">Enter Sport:</label>
+            <input class="form-control" id="sport-input" name="subjectSport" type="text">
+          </div>
+          <input type="submit" value="submit" class="btn btn-primary">
         </form>
       </div>
     </div>
@@ -39,6 +45,7 @@
     <div class="row">
       <div class="col-md-12">
         <p>Explanation of results:</p>
+        <!-- Describe parameters in modelDict -->
       </div>
     </div>
   </div>
