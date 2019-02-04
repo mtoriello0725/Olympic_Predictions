@@ -21,11 +21,11 @@ app = Flask(__name__)
 
 # Define environment variables
 
-username = os.get_env("USERNAME_DB")
-password = os.get_env("PASSWORD_DB")
+username = os.getenv("USERNAME_DB")
+password = os.getenv("PASSWORD_DB")
 
 # For now use csvs
-path_to_athletes = os.path.join("data", "athlete_status.csv")
+path_to_athletes = os.path.join("data", "athletes_status.csv")
 path_to_normal = os.path.join("data", "500_Person_Gender_Height_Weight_Index.csv")
 
 ##################################################
@@ -51,12 +51,12 @@ def pullData(sport):
     athletes = pd.read_csv(path_to_athletes)
     ordinary = pd.read_csv(path_to_normal)
 
-    # Use function input "sport" to breakdown athletes dataframe
+    # Use function input <sport> to breakdown athletes dataframe
     filter_ = "Sport"
 
     # athletes_sport dataframe adjustments
     athletes_sport = athletes.loc[athletes[filter_] == sport].copy()
-    athletes_sport.drop(columns=["Age","Year","Season","Sport","Event"], inplace=True)
+    athletes_sport.drop(columns=["Unnamed: 0", "Age","Year","Season","Sport","Event"], inplace=True)
 
     # ordinary dataframe adjustments
     ordinary.rename(columns={"Gender":"Sex"}, inplace=True)
@@ -78,7 +78,7 @@ def pullData(sport):
     # concat dataframe of ordinary people and athletes
     people_df = pd.concat([athletes_sport, ordinary])
 
-	return people_df
+    return people_df
 
 ##################################################
 # Function for Logistical Regression Model
@@ -100,6 +100,7 @@ def LogRegression(height, weight, sex, sport):
     # Develop Logistical Model
     X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y)
     classifier = LogisticRegression()
+
     classifier.fit(X_train, y_train)
     predictions = classifier.predict(X_test)
 
@@ -121,18 +122,20 @@ def LogRegression(height, weight, sex, sport):
     # cm = np.round(height * 2.54, 0)
     # kg = np.round(weight * 0.453592, 0)
 
-
     # predict subject based on model
-    if sex="M":
-        subject = np.array([[height, weight, 0, 1]])
-    elif sex="F":
-        subject = np.array([[height, weight, 1, 0]])
+    if sex == "M":
+        subject = np.array([[height, weight, 0, 1]]).astype(np.float64)
+    elif sex == "F":
+        subject = np.array([[height, weight, 1, 0]]).astype(np.float64)
     else:
-        subject = np.array([[height, weight, 0, 1]])
+        return "broken_ifstatement", "broken_ifstatement"
 
-    consensus = classifier.predict(subject)[0]
+    try:
+        consensus = classifier.predict(subject)[0]
+    except:
+        return "broken_here", "broken_here"
 
-	return consensus, modelDict
+    return consensus, modelDict
 
 ##################################################
 # Routes leading to templates:
@@ -141,16 +144,16 @@ def LogRegression(height, weight, sex, sport):
 @app.route("/", methods=["GET", "POST"])
 def index():
     """Return the homepage."""
-    if request.method = "POST":
-    	userHeight = request.form["userHeight"]
-    	userWeight = request.form["userWeight"]
-    	userSex = request.form["userSex"]
-    	userSport = request.form["userSport"]
+    if request.method == "POST":
+        userHeight = request.form["subjectHeight"]
+        userWeight = request.form["subjectWeight"]
+        userSex = request.form["subjectGender"]
+        userSport = request.form["subjectSport"]
 
-    	# Function for Logistical Regression
+        # Function for Logistical Regression
         consensus, modelDict = LogRegression(userHeight, userWeight, userSex, userSport)
 
-    	return render_template("index.html", consensus=consensus, modelDict=modelDict)
+        return render_template("index.html", consensus=consensus, modelDict=modelDict)
 
     return render_template("index.html")
 
