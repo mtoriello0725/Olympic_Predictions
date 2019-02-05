@@ -28,6 +28,8 @@ password = os.getenv("PASSWORD_DB")
 path_to_athletes = os.path.join("data", "athletes_status.csv")
 path_to_normal = os.path.join("data", "500_Person_Gender_Height_Weight_Index.csv")
 
+
+
 ##################################################
 # Function to connect to the database
 ##################################################
@@ -42,7 +44,7 @@ def dbConnect():
 # Function to concat data according to sport
 ##################################################
 
-def pullData(sport):
+def pullData(sport, event):
 
 	# Extract height, weight, sex, according to desired sport
 	# Extract ordinary people and concat to one dataframe
@@ -52,10 +54,13 @@ def pullData(sport):
     ordinary = pd.read_csv(path_to_normal)
 
     # Use function input <sport> to breakdown athletes dataframe
-    filter_ = "Sport"
+    athletes_sport = athletes.loc[athletes["Sport"] == sport].copy()
 
-    # athletes_sport dataframe adjustments
-    athletes_sport = athletes.loc[athletes[filter_] == sport].copy()
+    # Use <event> to break down df even further.
+    if event != "":
+        athletes_sport = athletes_sport.loc[athletes_sport["Event"] == event]
+
+
     athletes_sport.drop(columns=["Unnamed: 0", "Age","Year","Season","Sport","Event"], inplace=True)
 
     # ordinary dataframe adjustments
@@ -84,11 +89,11 @@ def pullData(sport):
 # Function for Logistical Regression Model
 ##################################################
 
-def LogRegression(height, weight, sex, sport):
+def LogRegression(height, weight, sex, sport, event):
 
 	# consensus = Model.predict(height, weight, sex, sport)
 
-    people_df = pullData(sport)
+    people_df = pullData(sport, event)
 
     X = people_df.drop(columns="Status")
     y = people_df.Status
@@ -118,15 +123,19 @@ def LogRegression(height, weight, sex, sport):
         "false_negative":fn,
     }
 
-    # # may need to adjust height and weight given metric used:
-    # cm = np.round(height * 2.54, 0)
-    # kg = np.round(weight * 0.453592, 0)
+    # adjust height to represent centimeters.
+    height_in = height.split("'")
+    height_in = int(height_in[0])*12 + int(height_in[1])
+
+    # may need to adjust height and weight given metric used:
+    cm = np.round(height_in * 2.54, 0)
+    kg = np.round(int(weight) * 0.453592, 0)
 
     # predict subject based on model
     if sex == "M":
-        subject = np.array([[height, weight, 0, 1]]).astype(np.float64)
+        subject = np.array([[cm, kg, 0, 1]]).astype(np.float64)
     elif sex == "F":
-        subject = np.array([[height, weight, 1, 0]]).astype(np.float64)
+        subject = np.array([[cm, kg, 1, 0]]).astype(np.float64)
     else:
         return "broken_ifstatement", "broken_ifstatement"
 
@@ -149,13 +158,25 @@ def index():
         userWeight = request.form["subjectWeight"]
         userSex = request.form["subjectGender"]
         userSport = request.form["subjectSport"]
+        userEvent = request.form["subjectEvent"]
 
         # Function for Logistical Regression
-        consensus, modelDict = LogRegression(userHeight, userWeight, userSex, userSport)
+        consensus, modelDict = LogRegression(userHeight, userWeight, userSex, userSport, userEvent)
 
         return render_template("index.html", consensus=consensus, modelDict=modelDict)
+        
+    # define default model
+    modelDict = {
+        "precision":"",
+        "recall":"",
+        "f1_score":"",
+        "true_positive":"",
+        "true_negative":"",
+        "false_positive":"",
+        "false_negative":"",
+    }
 
-    return render_template("index.html")
+    return render_template("index.html", modelDict=modelDict)
 
 if __name__ == "__main__":
     app.run()
