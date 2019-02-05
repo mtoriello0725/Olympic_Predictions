@@ -16,11 +16,11 @@
       <div class="col-md-12">
         <form method=POST>
           <div class="form-group">
-            <label for="height">Enter Height:</label>
-            <input class="form-control" id="height-input" name="subjectHeight" type="int">
+            <label for="height">Enter Height: (ft'in) ex. For 5 feet 11 inches, type (5'11)</label>
+            <input class="form-control" id="height-input" name="subjectHeight" type="text">
           </div>
           <div class="form-group">
-            <label for="height">Enter Weight:</label>
+            <label for="height">Enter Weight: (lbs)</label>
             <input class="form-control" id="weight-input" name="subjectWeight" type="int">
           </div>
           <div class="form-group">
@@ -31,7 +31,11 @@
             <label for="height">Enter Sport:</label>
             <input class="form-control" id="sport-input" name="subjectSport" type="text">
           </div>
-          <input type="submit" value="submit" class="btn btn-primary">
+          <div class="form-group">
+            <label for="height">Enter Event: (Recommended)</label>
+            <input class="form-control" id="event-input" name="subjectEvent" type="text">
+          </div>
+          <input id="submit" type="submit" value="submit" class="btn btn-primary">
         </form>
       </div>
     </div>
@@ -44,8 +48,16 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <p>Explanation of results:</p>
+        <h2>Explanation of results:</h2>
         <!-- Describe parameters in modelDict -->
+
+        <p>Precision: {{ modelDict.precision }}</p>
+        <p>Recall: {{ modelDict.recall }}</p>
+        <p>F1 Score: {{ modelDict.f1_score }}</p>
+        <p>Athletes Correctly Guessed: {{ modelDict.true_positive }}</p>
+        <p>Ordinary Correctly Guessed: {{ modelDict.true_negative }}</p>
+        <p>Athlete Incorrectly Guessed: {{ modelDict.false_positive }}</p>
+        <p>Ordinary Incorrectly Guessed: {{ modelDict.false_negative }}</p>
       </div>
     </div>
   </div>
