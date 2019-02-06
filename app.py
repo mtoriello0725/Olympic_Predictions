@@ -178,5 +178,11 @@ def index():
 
     return render_template("index.html", modelDict=modelDict)
 
+@app.route("/about/")
+def about():
+	""" Return the about page to explain data clensing and visuals """
+	return render_template("about.html")
+
+
 if __name__ == "__main__":
     app.run()
