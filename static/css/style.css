@@ -1,1 +1,21 @@
 /*Style sheet, minimal modifications*/
+.navbar-right .dropdown {
+	padding: 0 12px;
+}
+
+.dropdown-menu {
+	min-width: 60px;
+}
+
+a {
+	color: black;
+}
+
+.center-item {
+	text-align: center;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
