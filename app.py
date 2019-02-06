@@ -6,11 +6,12 @@ import pandas as pd
 # Sklearn imports
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC 
 from sklearn.metrics import recall_score, precision_score, f1_score, confusion_matrix
 
-# Import Flask & pymongo
+# Import Flask 
 from flask import Flask, jsonify, render_template, redirect, request
-import pymongo
 
 # Start Flask application:
 app = Flask(__name__)
@@ -104,10 +105,21 @@ def LogRegression(height, weight, sex, sport, event):
 
     # Develop Logistical Model
     X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y)
-    classifier = LogisticRegression()
 
+    # Logistical Regression:
+    classifier = LogisticRegression()
     classifier.fit(X_train, y_train)
     predictions = classifier.predict(X_test)
+
+    # # Random Forest
+    # classifier = RandomForestClassifier(n_estimators=200)
+    # classifier.fit(X_train, y_train)
+    # predictions = classifier.predict(X_test)
+
+    # # Support Vector Machines
+    # classifier = SVC(kernel='linear')
+    # classifier.fit(X_train, y_train)
+    # predictions = classifier.predict(X_test)
 
     # Determine confusion matrix elements
     tn, fp, fn, tp = confusion_matrix(y_test, predictions, labels=["Ordinary", "Athlete"]).ravel()
@@ -139,10 +151,12 @@ def LogRegression(height, weight, sex, sport, event):
     else:
         return "broken_ifstatement", "broken_ifstatement"
 
-    try:
-        consensus = classifier.predict(subject)[0]
-    except:
-        return "broken_here", "broken_here"
+    consensus = classifier.predict(subject)[0]
+
+    if consensus == "Athlete":
+    	consensus = f"Congrats! You could compete in {sport}"
+    else:
+    	consensus = f"Your body type does not match athletes in {sport}"
 
     return consensus, modelDict
 

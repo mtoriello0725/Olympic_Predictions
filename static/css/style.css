@@ -1,12 +1,15 @@
 /*Style sheet, minimal modifications*/
-.navbar-right .dropdown {
-	padding: 0 12px;
+
+
+.navbar-expand-lg .navbar-nav .nav-link {
+	padding-left: 2rem;
 }
 
-.dropdown-menu {
-	min-width: 60px;
+.navbar {
+	font-size: 16px;
 }
 
+/*
 a {
 	color: black;
 }
@@ -18,4 +21,4 @@ a {
 body {
   padding: 0;
   margin: 0;
-}
+}*/
